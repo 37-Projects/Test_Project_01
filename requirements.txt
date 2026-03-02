@@ -1,0 +1,17 @@
+pandas
+openpyxl
+python-docx
+pypdf
+pdfplumber
+spacy
+sentence-transformers
+scikit-learn
+numpy
+requests
+beautifulsoup4
+lxml
+tenacity
+python-dotenv
+loguru
+pyyaml
+xlsxwriter
