@@ -1,0 +1,27 @@
+app:
+  location: "Bangalore, India"
+  top_n_jobs: 100
+  log_level: "INFO"
+
+resume:
+  supported_extensions: [".pdf", ".docx"]
+
+job_search:
+  max_description_chars: 900
+  salary_currency: "INR"
+  seniority_thresholds:
+    entry_max: 2
+    mid_max: 6
+    senior_max: 10
+  weights:
+    skill_overlap: 0.35
+    keyword_similarity: 0.25
+    domain_match: 0.15
+    experience_fit: 0.15
+    recency: 0.10
+
+salary_benchmarks_bangalore:
+  entry: "₹5L - ₹10L"
+  mid: "₹10L - ₹22L"
+  senior: "₹22L - ₹40L"
+  lead: "₹35L - ₹60L+"
