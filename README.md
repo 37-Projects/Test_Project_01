@@ -29,11 +29,26 @@ Optional APIs in `.env`:
 
 If not provided, the system uses a synthetic fallback dataset to keep pipeline execution reliable.
 
+
+## Preflight check
+
+Before running the full pipeline, validate local setup:
+
+```bash
+python preflight_check.py
+```
+
+This verifies required Python modules and confirms resume files are present in `data/resumes`.
+
 ## Run
 
 ```bash
 python main.py
 ```
+
+If third-party dependencies are unavailable, `main.py` automatically switches to a **minimal fallback mode** that uses only Python standard library modules. In fallback mode:
+- A simplified resume overview text file is generated.
+- Job results are exported as CSV files (one file per recency bucket) under `data/job_results/job_search_results_<timestamp>/`.
 
 ## What the pipeline does
 
