@@ -3,15 +3,16 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-from loguru import logger
 
-from src.config_loader import load_settings
-from src.exporter import export_jobs_to_excel
-from src.job_search import search_and_rank_jobs, split_by_recency, to_rows
-from src.logger_setup import configure_logger
-from src.overview_generator import generate_overview
-from src.resume_analyzer import analyze_resume
+DEFAULT_SETTINGS = {
+    "resume": {"supported_extensions": [".pdf", ".docx"]},
+    "salary_benchmarks_bangalore": {
+        "entry": "₹5L - ₹10L",
+        "mid": "₹10L - ₹22L",
+        "senior": "₹22L - ₹40L",
+        "lead": "₹35L - ₹60L+",
+    },
+}
 
 
 def _find_resume(settings: dict) -> Path:
@@ -29,7 +30,17 @@ def _salary_guidance(settings: dict, seniority_level: str) -> str:
     return settings["salary_benchmarks_bangalore"].get(seniority_level.lower(), "₹8L - ₹20L")
 
 
-def main() -> None:
+def _run_full_pipeline() -> None:
+    from dotenv import load_dotenv
+    from loguru import logger
+
+    from src.config_loader import load_settings
+    from src.exporter import export_jobs_to_excel
+    from src.job_search import search_and_rank_jobs, split_by_recency, to_rows
+    from src.logger_setup import configure_logger
+    from src.overview_generator import generate_overview
+    from src.resume_analyzer import analyze_resume
+
     load_dotenv()
     settings = load_settings()
     configure_logger(settings["app"]["log_level"])
@@ -51,6 +62,17 @@ def main() -> None:
     print(f"Overview generated: {overview_path}")
     print(f"Top jobs collected: {len(records)}")
     print(f"Excel generated: {excel_path}")
+
+
+def main() -> None:
+    try:
+        _run_full_pipeline()
+    except ModuleNotFoundError as exc:
+        missing_module = str(exc).split("'")[-2] if "'" in str(exc) else str(exc)
+        print(f"Dependency '{missing_module}' is missing. Switching to minimal fallback mode.")
+        from src.minimal_fallback import run_fallback_pipeline
+
+        run_fallback_pipeline()
 
 
 if __name__ == "__main__":
